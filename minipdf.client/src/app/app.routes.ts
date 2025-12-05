@@ -1,10 +1,11 @@
 import { Routes } from '@angular/router';
 import { NotFound } from './common/not-found/not-found';
+import { Home } from './common/home/home';
 
 export const routes: Routes = [
   {
     path: '',
-    component: NotFound,
+    component: Home,
   },
   //   {
   //     path: 'clients',
