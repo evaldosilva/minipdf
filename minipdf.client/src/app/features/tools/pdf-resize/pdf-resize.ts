@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Component, inject } from '@angular/core';
 
 @Component({
   standalone: true,
@@ -7,4 +8,56 @@ import { Component } from '@angular/core';
   templateUrl: './pdf-resize.html',
   styleUrl: './pdf-resize.css',
 })
-export class PdfResize {}
+export class PdfResize {
+  protected uploadedFiles: File[] = [];
+  private readonly httpClient = inject(HttpClient);
+
+  getFileName(file: File) {
+    const filename = file.name + ' (' + this.getFileSize(file.size) + ')';
+    return filename;
+  }
+
+  private getFileSize(size: number) {
+    return new Intl.NumberFormat().format(Math.ceil(size / 1024)) + ' KB';
+  }
+
+  onUpload() {
+    let files = (<HTMLInputElement>document.getElementById('file-upload')).files || [];
+    let fileExists: boolean = false;
+
+    for (var i = 0; i < files.length; i++) {
+      for (var x = 0; x < this.uploadedFiles?.length; x++)
+        if (this.uploadedFiles[x].name == files[i].name) {
+          fileExists = true;
+          break;
+        }
+
+      if (!fileExists) this.uploadedFiles?.push(files[i]);
+
+      fileExists = false;
+    }
+
+    // In case of clear and re select items, activate onChange call
+    (<HTMLInputElement>document.getElementById('file-upload')).value = '';
+  }
+
+  removeFileFromList(removedFile: File) {
+    this.uploadedFiles?.splice(this.uploadedFiles?.indexOf(removedFile), 1);
+  }
+
+  public sendFiles() {
+    const URL: string = 'aafafdfdfad';
+
+    const contentHeaders = new HttpHeaders({
+      Authorization: 'Bearer ojfbgojfdbgjdfbg',
+      enctype: 'multipart/form-data',
+    });
+
+    const formData = new FormData();
+    this.uploadedFiles?.forEach((file) => {
+      formData.append('file', file);
+    });
+
+    this.httpClient.post(URL, formData, { headers: contentHeaders });
+  }
+}

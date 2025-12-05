@@ -1,1 +1,111 @@
-<p>pdf-resize works!</p>
+<div class="flex flex-row">
+  <!-- start Selecionar arquivos -->
+  <div class="w-64 flex-initial">
+    <label for="file-upload" class="custom-file-upload mb-4">
+      <div
+        class="group grid grid-row gap-4 rounded-lg border border-indigo-600 bg-indigo-600 px-5 py-3 transition-colors hover:shadow-xl hover:bg-transparent"
+      >
+        <div class="font-medium text-white transition-colors group-hover:text-indigo-600">
+          SELECIONAR ARQUIVOS
+        </div>
+        <span class="shrink-0 rounded-full border border-current bg-indigo-700 p-2 text-indigo-600">
+          <div class="text-xs/5 text-gray-200">Accepted PDF files up to 1GB</div>
+        </span>
+      </div>
+    </label>
+    <input
+      id="file-upload"
+      name="file-upload"
+      type="file"
+      accept=".doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/*,.pdf"
+      multiple
+      (change)="onUpload()"
+    />
+  </div>
+  <!-- end Selecionar arquivos -->
+
+  <!-- start Comprimir -->
+  <div class="w-64 flex-initial">
+    <div
+      class="group grid grid-row gap-4 rounded-lg border border-red-600 bg-red-600 px-5 py-3 transition-colors hover:shadow-xl hover:bg-transparent cursor-pointer"
+    >
+      <div class="font-medium text-white transition-colors group-hover:text-red-600">
+        Comprimir PDF
+      </div>
+    </div>
+  </div>
+  <!-- end Comprimir -->
+
+  <!-- start Compressões restantes -->
+  <div class="w-64 flex-initial">
+    <div
+      class="group grid grid-row gap-4 rounded-4xl border border-amber-600 bg-amber-600 px-5 py-3 transition-colors hover:shadow-xl hover:bg-transparent cursor-pointer"
+    >
+      <div class="font-medium text-sm text-white transition-colors group-hover:text-amber-600">
+        Compressões Restantes: 500
+      </div>
+    </div>
+  </div>
+  <!-- end Compressões restantes -->
+
+  <!-- start Opções Avancadas -->
+  <div class="space-y-2">
+    <details class="group [&amp;_summary::-webkit-details-marker]:hidden">
+      <summary
+        class="flex cursor-pointer items-center justify-between gap-4 rounded-lg border border-gray-200 bg-white px-4 py-3 font-medium text-gray-900 hover:bg-gray-50"
+      >
+        <span>Opções Avançadas</span>
+
+        <svg
+          class="size-5 shrink-0 transition-transform duration-300 group-open:-rotate-180"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7"
+          ></path>
+        </svg>
+      </summary>
+
+      <div class="p-4">
+        <label for="Qualidade">
+          <span class="text-sm font-medium text-gray-700"> Qualidade (0 a 100%) </span>
+          <input
+            type="number"
+            id="Qualidade"
+            class="mt-0.5 w-full rounded border-gray-300 shadow-sm sm:text-sm"
+          />
+        </label>
+      </div>
+    </details>
+  </div>
+  <!-- end Opções Avançadas -->
+
+  <!-- start Upgrade de Plano -->
+  <div
+    class="cursor-pointer border-2 border-black bg-white px-5 py-3 font-semibold text-black shadow-[4px_4px_0_0] hover:bg-yellow-300 focus:ring-2 focus:ring-yellow-300 focus:outline-0"
+  >
+    Faça o upgrade do seu plano
+  </div>
+
+  <!-- end   Upgrade de Plano -->
+</div>
+
+@if (uploadedFiles.length) {
+<div class="flex flex-wrap gap-2">
+  @for (file of uploadedFiles; track file) {
+
+  <div class="rounded-2xl border border-gray-300 shadow-sm sm:p-2 mx-10">
+    <div class="text-sm m-2 col-span-23">
+      {{ getFileName(file) }}
+      <div (click)="removeFileFromList(file)" class="cursor-pointer text-red-600">delete</div>
+    </div>
+  </div>
+  }
+</div>
+}
