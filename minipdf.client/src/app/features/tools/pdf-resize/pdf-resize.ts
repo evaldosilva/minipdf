@@ -1,14 +1,18 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
+import { PanelModule } from 'primeng/panel';
+import { InputTextModule } from 'primeng/inputtext';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   standalone: true,
   selector: 'app-pdf-resize',
-  imports: [],
+  imports: [FormsModule, PanelModule, InputTextModule],
   templateUrl: './pdf-resize.html',
   styleUrl: './pdf-resize.css',
 })
 export class PdfResize {
+  protected quality: number = 100;
   protected uploadedFiles: File[] = [];
   private readonly httpClient = inject(HttpClient);
 

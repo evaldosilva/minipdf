@@ -8,12 +8,3 @@ input[type='file'] {
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
-.custom-file-upload {
-  color: var(--color-surface-50);
-  background-color: var(--color-primary);
-  display: inline-block;
-  padding: 8px;
-  cursor: pointer;
-  border-radius: 6px;
-  font-weight: 500;
-}
