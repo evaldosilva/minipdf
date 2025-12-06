@@ -1,8 +1,12 @@
+using Domain.PdfCompressor;
+using Service.PdfCompressor;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddScoped<IPdfCompressor, PdfCompressor>();
 
 var app = builder.Build();
 

@@ -7,14 +7,14 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Service.PdfCompressor;
 
 public class PdfCompressor : IPdfCompressor
 {
-    private const string Path = "../../../test.pdf";
-    private const string OutputFilePrefix = "img-";
+    private const string outputFolder = "mini-output\\";
+    private const string FilePrefix = "mini-";
+    private const string OutputImgFilePrefix = "img-";
     private const string OutputFileExtension = ".jpeg";
     private const int dimOne = 1080,
                       dimTwo = 1920;
@@ -22,18 +22,21 @@ public class PdfCompressor : IPdfCompressor
     private int _pdfQualityPercentage = 20;
     private int _memoryStreamInitBytes = 100;
 
-    public Task<byte[]> CompressAsync(byte[] pdfData, int qualityPercentage)
+    public Task<PdfData> CompressAsync(PdfData pdfData, int qualityPercentage = 50)
     {
-        GetFilesFrom(String searchFolder, String[] filters, bool isRecursive)
-            PdfToImages(false);
-                ImagesToPdf();
+        _pdfQualityPercentage = qualityPercentage;
+        Directory.CreateDirectory($"{pdfData.RootFolder}{outputFolder}");
 
-        throw new NotImplementedException();
+        PdfToImages(pdfData);
+        ImagesToPdf(pdfData);
+        //  File.Delete(pdfData.OriginalPath);
+
+        return Task.FromResult(pdfData);
     }
 
-    private void PdfToImages(bool markText = false)
+    private void PdfToImages(PdfData pdfData, bool markText = false)
     {
-        using var docReader = DocLib.Instance.GetDocReader(Path, new PageDimensions(dimOne, dimTwo));
+        using var docReader = DocLib.Instance.GetDocReader(pdfData.OriginalPath, new PageDimensions(dimOne, dimTwo));
 
         int page = 0;
         while (page < docReader.GetPageCount())
@@ -66,7 +69,7 @@ public class PdfCompressor : IPdfCompressor
 
             bmp.Save(stream, GetEncoder(ImageFormat.Jpeg), myEncoderParameters);
 
-            File.WriteAllBytes($"../../../{OutputFilePrefix}{page}{OutputFileExtension}", stream.ToArray());
+            File.WriteAllBytes($"{pdfData.RootFolder}{OutputImgFilePrefix}{page}{OutputFileExtension}", stream.ToArray());
             page++;
         }
     }
@@ -112,11 +115,10 @@ public class PdfCompressor : IPdfCompressor
         }
     }
 
-    private static void ImagesToPdf()
+    private static void ImagesToPdf(PdfData pdfData)
     {
-        string searchFolder = "../../../";
         var filters = new string[] { "jpg", "jpeg" };
-        var files = GetFilesFrom(searchFolder, filters, false);
+        var files = GetFilesFrom(pdfData.RootFolder, filters, false);
         var images = new List<JpegImage>();
 
         foreach (var f in files)
@@ -129,10 +131,13 @@ public class PdfCompressor : IPdfCompressor
                 Height = size.Height
             };
             images.Add(file);
+            File.Delete(f);
         }
 
         var bytes = DocLib.Instance.JpegToPdf(images);
-        File.WriteAllBytes("../../../output_file.pdf", bytes);
+
+        pdfData.CurrentSize = bytes.Length;
+        File.WriteAllBytes($"{pdfData.RootFolder}{outputFolder}{FilePrefix}{pdfData.FileName}", bytes);
     }
 
     private static Size GetImageSize(string fullPath)

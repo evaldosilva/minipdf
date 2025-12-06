@@ -13,7 +13,7 @@ import { environment } from '../../../../environments/environment';
   styleUrl: './pdf-resize.css',
 })
 export class PdfResize {
-  protected quality: number = 100;
+  protected quality: number = 50;
   protected uploadedFiles: File[] = [];
   private readonly httpClient = inject(HttpClient);
 
@@ -58,7 +58,7 @@ export class PdfResize {
 
     const formData = new FormData();
     this.uploadedFiles?.forEach((file) => {
-      formData.append('file', file);
+      formData.append('files', file, file.name);
     });
 
     console.log('data sent: ' + this.uploadedFiles.length);
