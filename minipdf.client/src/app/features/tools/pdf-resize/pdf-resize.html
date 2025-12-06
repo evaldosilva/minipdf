@@ -26,7 +26,10 @@
     <div
       class="inline-block group px-30 py-18 text-2xl rounded-lg border border-red-600 bg-red-600 transition-colors hover:shadow-xl hover:bg-transparent cursor-pointer"
     >
-      <div class="font-medium text-white transition-colors group-hover:text-red-600">
+      <div
+        class="font-medium text-white transition-colors group-hover:text-red-600"
+        (click)="sendFiles()"
+      >
         Comprimir PDF
       </div>
     </div>

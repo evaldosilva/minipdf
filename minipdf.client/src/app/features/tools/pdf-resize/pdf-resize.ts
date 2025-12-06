@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { PanelModule } from 'primeng/panel';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   standalone: true,
@@ -50,8 +51,6 @@ export class PdfResize {
   }
 
   public sendFiles() {
-    const URL: string = 'aafafdfdfad';
-
     const contentHeaders = new HttpHeaders({
       Authorization: 'Bearer ojfbgojfdbgjdfbg',
       enctype: 'multipart/form-data',
@@ -62,6 +61,15 @@ export class PdfResize {
       formData.append('file', file);
     });
 
-    this.httpClient.post(URL, formData, { headers: contentHeaders });
+    console.log('data sent: ' + this.uploadedFiles.length);
+
+    this.httpClient
+      .post(environment.apiUrl + 'PdfCompressor/compress', formData, {
+        headers: contentHeaders,
+      })
+      .subscribe({
+        next: (response) => console.log(response),
+        error: (err) => console.log(err),
+      });
   }
 }

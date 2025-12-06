@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { PdfResize } from '../../features/tools/pdf-resize/pdf-resize';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -10,6 +11,6 @@ import { PdfResize } from '../../features/tools/pdf-resize/pdf-resize';
 })
 export class Home {
   subscribe() {
-    window.location.href = 'https://buy.stripe.com/test_7sY00lgJc9699B6fcacMM00';
+    window.location.href = environment.checkoutRecurrentSubscriptionUrl;
   }
 }
