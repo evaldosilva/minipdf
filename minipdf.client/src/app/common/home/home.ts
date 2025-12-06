@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { PdfResize } from '../../features/tools/pdf-resize/pdf-resize';
 import { environment } from '../../../environments/environment';
+import { Footer } from '../footer/footer';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [PdfResize],
+  imports: [PdfResize, Footer],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

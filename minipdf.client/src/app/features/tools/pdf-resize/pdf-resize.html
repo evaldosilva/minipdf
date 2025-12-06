@@ -1,11 +1,13 @@
-<div class="m-10 grid grid-cols-3 gap-4">
+<div class="m-10 grid grid-flow-col gap-4">
   <!-- start Selecionar arquivos -->
   <div class="w-64 flex-initial">
     <label for="file-upload">
       <div
         class="inline-block px-30 py-18 text-2xl cursor-pointer group rounded-lg border border-indigo-600 bg-indigo-600 transition-colors hover:bg-transparent"
       >
-        <div class="font-medium text-white transition-colors group-hover:text-indigo-600">
+        <div
+          class="select-none font-medium text-white transition-colors group-hover:text-indigo-600"
+        >
           Selecionar Arquivos
         </div>
         <input
@@ -27,7 +29,7 @@
       class="inline-block group px-30 py-18 text-2xl rounded-lg border border-red-600 bg-red-600 transition-colors hover:shadow-xl hover:bg-transparent cursor-pointer"
     >
       <div
-        class="font-medium text-white transition-colors group-hover:text-red-600"
+        class="select-none font-medium text-white transition-colors group-hover:text-red-600"
         (click)="sendFiles()"
       >
         Comprimir PDF
@@ -39,17 +41,35 @@
   <!-- start Opções Avancadas -->
   <div class="space-y-2">
     <p-panel header="Opções">
-      <p class="m-0">
-        <label for="firstname">Qualidade (0 a 100)</label>
-        <input pInputText id="firstname" class="w-full" [(ngModel)]="quality" autocomplete="off" />
-      </p>
+      <div class="m-1">
+        <label for="quality">Qualidade (0 a 100)</label>
+        <input pInputText id="quality" class="w-full" [(ngModel)]="quality" autocomplete="off" />
+      </div>
+      <div class="m-1">
+        <label for="size">Tamanho Maximo em Kilobytes (KB) por arquivo</label>
+        <input pInputText id="size" class="w-full" [(ngModel)]="maxSizeKb" autocomplete="off" />
+        <span class="text-sm">Ex: 2000 KB equivale a 2 Megabytes (MB). </span>
+        <span class="text-sm text-orange-500"
+          >Atenção: Nesta opção a qualidade pode ficar comprometida.</span
+        >
+      </div>
     </p-panel>
   </div>
   <!-- end Opções Avançadas -->
 </div>
 
+<!-- start Upload progress -->
+@if(isCompressing()) {
+<div class="card mx-20 my-6 justify-center">
+  <div class="my-4 text-2xl">Comprimindo Arquivos. Por favor aguarde.</div>
+  <p-progressbar mode="indeterminate" [style]="{ height: '16px' }" />
+</div>
+}
+<!-- end Upload progress -->
+
+<!-- start Files to be Compressed -->
 @if (uploadedFiles.length) {
-<div class="flex flex-wrap gap-2">
+<div class="flex flex-col gap-2">
   @for (file of uploadedFiles; track file) {
   <div class="rounded-2xl border border-gray-300 bg-white shadow-sm sm:p-2 mx-10">
     <div class="inline text-sm m-2 col-span-23">
@@ -64,3 +84,63 @@
   }
 </div>
 }
+<!-- end Files to be Compressed -->
+
+<!-- start upload files final result -->
+@if(publicURI) {
+<p-panel>
+  <div class="flex flex-col gap-2">
+    @if(compressionPercentage < 1){
+    <div class="my-4">
+      <div class="text-3xl text-orange-500">
+        Não houve uma redução total significativa do(s) seu(s) arquivo(s).
+      </div>
+      <div class="text-sm text-orange-400">
+        Confira abaixo a taxa de compressão de cada arquivo.
+      </div>
+    </div>
+    } @else{
+    <div class="my-4">
+      <div class="my-4 text-3xl text-green-700">
+        Redução total de <span class="font-bold">{{ compressionPercentage }}%</span> do(s) seu(s)
+        arquivo(s).
+      </div>
+      <div class="mb-8 text-sm text-emerald-800">
+        Passou de um total de {{ originalSize }} para {{ compressedSize }}.
+      </div>
+    </div>
+    }
+    <!-- start Botao de DOWNLOAD do PDF comprimido -->
+    <div class="w-64 flex-initial">
+      <a
+        class="select-none inline-block px-30 py-18 text-2xl font-bold rounded-sm border border-b-sky-600-600 bg-sky-600 text-white hover:bg-transparent hover:text-sky-600"
+        [href]="publicURI"
+      >
+        Baixar arquivos comprimidos
+      </a>
+    </div>
+    <!-- end Botao de DOWNLOAD do PDF comprimido -->
+
+    @for (fileStats of uploadedFileResults; track $index) {
+    <div class="my-1 rounded-2xl border border-gray-300 bg-white shadow-sm sm:p-2 mx-10">
+      {{ fileStats.filename }}
+      <i class="ml-2 align-middle inline pi pi-arrow-right" style="color: cadetblue"></i>
+      <span class="mx-2 italic">
+        @if(fileStats.reductionPercentage! < 1) {
+        {{ getFileSize(fileStats.originalSize ?? 0) }}
+        } @else { from {{ getFileSize(fileStats.originalSize ?? 0) }} to
+        {{ getFileSize(fileStats.compressedSize ?? 0) }}
+        }
+      </span>
+      @if(fileStats.reductionPercentage! < 1) {
+      <i class="inline align-middle pi pi-circle" style="color: blue"></i>
+      Sem redução } @else{
+      <i class="inline align-middle pi pi-arrow-circle-down" style="color: red"></i>
+      {{ fileStats.reductionPercentage }}% }
+    </div>
+    }
+  </div>
+</p-panel>
+}
+
+<!-- end upload files final result -->

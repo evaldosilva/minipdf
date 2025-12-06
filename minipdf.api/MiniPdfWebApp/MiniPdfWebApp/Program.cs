@@ -1,4 +1,5 @@
 using Domain.PdfCompressor;
+using Microsoft.AspNetCore.Http.Features;
 using Service.PdfCompressor;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<IPdfCompressor, PdfCompressor>();
+
+// Set the limit to 1GB
+builder.Services.Configure<FormOptions>(options => { options.MultipartBodyLengthLimit = 1073741824; });
+
+// Set the limit to 1GB on Kestrel as well
+builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = 1073741824);
 
 var app = builder.Build();
 

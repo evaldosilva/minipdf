@@ -24,7 +24,13 @@ public class PdfCompressor : IPdfCompressor
 
     public Task<PdfData> CompressAsync(PdfData pdfData, int qualityPercentage = 50)
     {
-        _pdfQualityPercentage = qualityPercentage;
+        if (qualityPercentage < 1)
+            _pdfQualityPercentage = 1;
+        else if (qualityPercentage > 100)
+            _pdfQualityPercentage = 100;
+        else
+            _pdfQualityPercentage = qualityPercentage;
+        
         Directory.CreateDirectory($"{pdfData.RootFolder}{outputFolder}");
 
         PdfToImages(pdfData);
@@ -137,12 +143,16 @@ public class PdfCompressor : IPdfCompressor
         var bytes = DocLib.Instance.JpegToPdf(images);
 
         pdfData.CurrentSize = bytes.Length;
-        File.WriteAllBytes($"{pdfData.RootFolder}{outputFolder}{FilePrefix}{pdfData.FileName}", bytes);
+
+        if (pdfData.CurrentSize < pdfData.OriginalSize)
+            File.WriteAllBytes($"{pdfData.RootFolder}{outputFolder}{FilePrefix}{pdfData.FileName}", bytes);
+        else
+            pdfData.CurrentSize = pdfData.OriginalSize;
     }
 
     private static Size GetImageSize(string fullPath)
     {
-        using System.Drawing.Image img = System.Drawing.Image.FromFile(fullPath);
+        using Image img = Image.FromFile(fullPath);
         return new Size(img.Width, img.Height);
     }
 
