@@ -109,7 +109,8 @@ export class PdfResize {
           next: (response: PdfCompressorResult) => {
             console.log(response);
 
-            this.publicURI = response.publicURI!;
+            this.publicURI =
+              environment.apiUrl + 'PdfCompressor/document?identification=' + response.publicURI!;
             this.compressionPercentage = response.reductionPercentage!;
             this.originalSize = this.getFileSize(response.originalSize ?? 0);
             this.compressedSize = this.getFileSize(response.compressedSize ?? 0);
@@ -117,7 +118,10 @@ export class PdfResize {
           },
           error: (err) => console.log(err),
         })
-        .add(() => this.isCompressing.update((value) => (value = false)));
+        .add(() => {
+          this.isCompressing.update((value) => (value = false));
+          window.location.href = this.publicURI;
+        });
     }
   }
 }

@@ -35,7 +35,6 @@ public class PdfCompressor : IPdfCompressor
 
         PdfToImages(pdfData);
         ImagesToPdf(pdfData);
-        //  File.Delete(pdfData.OriginalPath);
 
         return Task.FromResult(pdfData);
     }

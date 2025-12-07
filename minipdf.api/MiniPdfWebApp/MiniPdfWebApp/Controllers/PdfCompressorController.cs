@@ -9,6 +9,19 @@ namespace MiniPdfWebApp.Controllers
     [Route("[controller]")]
     public class PdfCompressorController(IPdfCompressor pdfCompressor) : ControllerBase
     {
+        [HttpGet]
+        [Route("document")]
+        public async Task<IActionResult> GetDocument([FromQuery] string identification)
+        {
+            string transactionId = identification.Split("\\")[0];
+            string rootFolder = string.Concat(AppDomain.CurrentDomain.BaseDirectory, transactionId, "\\mini-output\\");
+            Directory.Delete(rootFolder, true);
+            // System.IO.File.Delete(rootFolder + pdfDataResults[0].Filename);
+
+            var bytes = await System.IO.File.ReadAllBytesAsync(string.Concat(AppDomain.CurrentDomain.BaseDirectory, identification.Split("\\")[0], "\\", identification, "\\miniminipdf.zip"));
+            return File(bytes, "application/zip", "miniminipdf.zip");
+        }
+
         [HttpPost]
         [Route("compress")]
         public async Task<IActionResult> Compress([FromForm] IFormFile[] files, [FromQuery] int quality, [FromQuery] int maxSizeKb)
@@ -50,7 +63,8 @@ namespace MiniPdfWebApp.Controllers
                 );
             }
 
-            string publicURI = rootFolder + Guid.NewGuid().ToString() + Guid.NewGuid().ToString() + "\\";
+            string identification = transactionId + "\\" + Guid.NewGuid().ToString() + Guid.NewGuid().ToString();
+            string publicURI = rootFolder + identification + "\\";
             Directory.CreateDirectory(publicURI);
             ZipFile.CreateFromDirectory(rootFolder + "mini-output\\", string.Concat(publicURI, "miniminipdf.zip"));
 
@@ -67,7 +81,7 @@ namespace MiniPdfWebApp.Controllers
                 new(compressedPdfFiles.Sum(f => f.OriginalSize),
                     compressedPdfFiles.Sum(f => f.CurrentSize),
                     CalculateReductionPercentage(compressedPdfFiles.Sum(f => f.OriginalSize), compressedPdfFiles.Sum(f => f.CurrentSize)),
-                    string.Concat(publicURI, "miniminipdf.zip"),
+                    identification,
                     pdfDataResults);
 
             return Ok(result);
