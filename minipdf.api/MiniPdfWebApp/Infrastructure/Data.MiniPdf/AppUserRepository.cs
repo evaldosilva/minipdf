@@ -8,6 +8,6 @@ public class AppUserRepository(IConfiguration configuration) : IAppUserRepositor
     public int GetRemainingConvertions(string userId)
     {
         var connStr = configuration.GetConnectionString("AppMiniPdfConn");
-        return 99;
+        return 2;
     }
 }

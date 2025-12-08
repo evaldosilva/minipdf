@@ -1,3 +1,4 @@
+using Domain.AppUser;
 using Domain.PdfCompressor;
 using Microsoft.AspNetCore.Mvc;
 using MiniPdfWebApp.Results;
@@ -7,7 +8,7 @@ namespace MiniPdfWebApp.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class PdfCompressorController(IPdfCompressor pdfCompressor) : ControllerBase
+public class PdfCompressorController(IPdfCompressor pdfCompressor, IAppUser appUser) : ControllerBase
 {
     [HttpGet]
     [Route("document")]
@@ -24,7 +25,7 @@ public class PdfCompressorController(IPdfCompressor pdfCompressor) : ControllerB
 
         string filePath = string.Concat(AppDomain.CurrentDomain.BaseDirectory, identification.Split("\\")[0], "\\", identification, "\\miniminipdf.zip");
 
-        if(System.IO.File.Exists(filePath))
+        if (System.IO.File.Exists(filePath))
         {
             var bytes = await System.IO.File.ReadAllBytesAsync(filePath);
             return File(bytes, "application/zip", "miniminipdf.zip");
@@ -38,7 +39,9 @@ public class PdfCompressorController(IPdfCompressor pdfCompressor) : ControllerB
     public async Task<IActionResult> Compress([FromForm] IFormFile[] files, [FromQuery] int quality, [FromQuery] int maxSizeKb)
     {
         if (files != null && files.Length == 0)
-            return Ok(new PdfCompressorResult(0, 0, 0, string.Empty, []));
+            return NoContent();
+        else if (!appUser.HasAvailableConvertions("test", files.Length))
+            return NoContent();
 
         string transactionId = Guid.NewGuid().ToString();
         string rootFolder = string.Concat(AppDomain.CurrentDomain.BaseDirectory, transactionId, "\\");

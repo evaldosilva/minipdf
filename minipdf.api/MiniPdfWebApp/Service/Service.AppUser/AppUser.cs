@@ -8,4 +8,9 @@ public class AppUser(IAppUserRepository appUserRepository) : IAppUser
     {
         return appUserRepository.GetRemainingConvertions(userId);
     }
+
+    public bool HasAvailableConvertions(string userId, int filesToBeConverted)
+    {
+       return GetRemainingConvertions(userId) >= filesToBeConverted;
+    }
 }
