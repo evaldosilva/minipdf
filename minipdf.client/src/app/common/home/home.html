@@ -32,7 +32,7 @@
           class="inline-block font-medium rounded-2xl border bg-black px-5 py-3 transition-colors"
         >
           <div class="select-none text-sm font-bold text-white transition-colors">
-            Compressões Restantes: 3
+            Compressões Restantes: {{ remainingCompressions() }}
           </div>
         </div>
       </div>
@@ -40,6 +40,7 @@
     </div>
   </header>
   <main class="flex flex-col gap-4 mb-auto h-10">
-    <app-pdf-resize></app-pdf-resize> <app-footer></app-footer>
+    <app-pdf-resize (updateRemainingCompressions)="getRemainingCompressions()"></app-pdf-resize>
+    <app-footer></app-footer>
   </main>
 </div>

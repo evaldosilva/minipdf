@@ -1,5 +1,7 @@
+using Domain.AppUser;
 using Domain.PdfCompressor;
 using Microsoft.AspNetCore.Http.Features;
+using Service.AppUser;
 using Service.PdfCompressor;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<IPdfCompressor, PdfCompressor>();
+builder.Services.AddScoped<IAppUser, AppUser>();
 
 // Set the limit to 1GB
 builder.Services.Configure<FormOptions>(options => { options.MultipartBodyLengthLimit = 1073741824; });

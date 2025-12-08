@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, output, signal } from '@angular/core';
 import { PanelModule } from 'primeng/panel';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
@@ -7,6 +7,7 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { environment } from '../../../../environments/environment';
 import { PdfCompressorResult } from '../../../core/models/PdfCompressorResult';
 import { PdfDataResult } from '../../../core/models/PdfDataResult';
+import { PdfcompressorService } from '../../../core/services/pdf-compressor';
 
 @Component({
   standalone: true,
@@ -16,6 +17,7 @@ import { PdfDataResult } from '../../../core/models/PdfDataResult';
   styleUrl: './pdf-resize.css',
 })
 export class PdfResize {
+  public updateRemainingCompressions = output<boolean>();
   protected isCompressing = signal<boolean>(false);
 
   protected compressionPercentage: number = 0;
@@ -28,7 +30,7 @@ export class PdfResize {
   protected maxSizeKb: number | undefined;
   protected uploadedFiles: File[] = [];
 
-  private readonly httpClient = inject(HttpClient);
+  private pdfcompressorService = inject(PdfcompressorService);
 
   getFileName(file: File) {
     const filename = file.name + ' (' + this.getFileSize(file.size) + ')';
@@ -83,11 +85,6 @@ export class PdfResize {
     if (this.uploadedFiles.length > 0) {
       this.clearCompressionResults();
 
-      const contentHeaders = new HttpHeaders({
-        Authorization: 'Bearer ojfbgojfdbgjdfbg',
-        enctype: 'multipart/form-data',
-      });
-
       const formData = new FormData();
       this.uploadedFiles?.forEach((file) => {
         formData.append('files', file, file.name);
@@ -97,14 +94,8 @@ export class PdfResize {
       this.isCompressing.update((value) => (value = true));
       this.clearFileList();
 
-      let _maxSizeKb = this.maxSizeKb ?? 0;
-      if (isNaN(_maxSizeKb)) _maxSizeKb = 0;
-
-      this.httpClient
-        .post(environment.apiUrl + 'PdfCompressor/compress', formData, {
-          headers: contentHeaders,
-          params: { quality: this.quality, maxSizeKb: _maxSizeKb },
-        })
+      this.pdfcompressorService
+        .Compress(formData, this.quality, this.maxSizeKb)
         .subscribe({
           next: (response: PdfCompressorResult) => {
             console.log(response);
@@ -115,6 +106,7 @@ export class PdfResize {
             this.originalSize = this.getFileSize(response.originalSize ?? 0);
             this.compressedSize = this.getFileSize(response.compressedSize ?? 0);
             this.uploadedFileResults = response.pdfDataResults!;
+            this.updateRemainingCompressions.emit(true);
           },
           error: (err) => console.log(err),
         })

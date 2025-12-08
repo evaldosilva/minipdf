@@ -1,8 +1,10 @@
 <Solution>
   <Folder Name="/Domain/">
     <Project Path="Domain/Domain.PdfCompressor/Domain.PdfCompressor.csproj" />
+    <Project Path="Domain/Domain.User/Domain.AppUser.csproj" />
   </Folder>
   <Folder Name="/Service/">
+    <Project Path="Service/Service.AppUser/Service.AppUser.csproj" Id="191afd12-08b6-4341-a64b-d7d6a962c412" />
     <Project Path="Service/Service.PdfCompressor/Service.PdfCompressor.csproj" />
   </Folder>
   <Project Path="MiniPdfWebApp/MiniPdfWebApp.csproj" />

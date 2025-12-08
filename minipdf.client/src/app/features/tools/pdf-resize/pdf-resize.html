@@ -111,14 +111,17 @@
     </div>
     }
     <!-- start Botao de DOWNLOAD do PDF comprimido -->
+    @if(compressionPercentage > 0) {
     <div class="w-64 flex-initial">
       <a
-        class="select-none inline-block px-30 py-18 text-2xl font-bold rounded-sm border border-b-sky-600-600 bg-sky-600 text-white hover:bg-transparent hover:text-sky-600"
+        class="select-none inline-block px-30 py-18 text-2xl font-bold rounded-sm border border-b-sky-600-600 bg-sky-600 text-white hover:bg-transparent hover:text-sky-600 cursor-pointer"
         [href]="publicURI"
       >
         Baixar arquivos comprimidos
       </a>
     </div>
+    }
+
     <!-- end Botao de DOWNLOAD do PDF comprimido -->
 
     @for (fileStats of uploadedFileResults; track $index) {
