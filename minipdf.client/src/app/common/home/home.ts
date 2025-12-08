@@ -1,43 +1,25 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { PdfResize } from '../../features/tools/pdf-resize/pdf-resize';
-import { environment } from '../../../environments/environment';
+import { Component } from '@angular/core';
 import { Footer } from '../footer/footer';
-import { AppUserService } from '../../core/services/app-user';
+import { Register } from '../../features/register/register';
+import { Login } from '../../features/login/login';
+import { Translator } from '../translator/translator';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [PdfResize, Footer],
+  imports: [Footer, Register, Login, Translator, RouterLink],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
-export class Home implements OnInit {
-  private readonly appUserService = inject(AppUserService);
-  protected remainingCompressions = signal<number>(0);
+export class Home {
+  protected isLogin: boolean = true;
 
-  ngOnInit(): void {
-    this.appUserService.getRemainingCompressions().subscribe({
-      next: (response) => {
-        this.remainingCompressions.set(response.valueOf());
-      },
-      error: (err) => {
-        console.log(err);
-      },
-    });
+  setRegisterMode() {
+    this.isLogin = false;
   }
 
-  getRemainingCompressions() {
-    this.appUserService.getRemainingCompressions().subscribe({
-      next: (response) => {
-        this.remainingCompressions.update((value) => (value = response.valueOf()));
-      },
-      error: (err) => {
-        console.log(err);
-      },
-    });
-  }
-
-  subscribe() {
-    window.location.href = environment.checkoutRecurrentSubscriptionUrl;
+  setLoginMode() {
+    this.isLogin = true;
   }
 }

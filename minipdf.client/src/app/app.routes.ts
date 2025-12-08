@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { NotFound } from './common/not-found/not-found';
 import { Home } from './common/home/home';
+import { ToolsArea } from './features/tools/tools-area/tools-area';
 
 export const routes: Routes = [
   {
@@ -12,10 +13,10 @@ export const routes: Routes = [
   //     component: ClientComponent,
   //     canActivate: [authGuard],
   //   },
-  //   {
-  //     path: 'services',
-  //     component: JobComponent,
-  //   },
+  {
+    path: 'tools',
+    component: ToolsArea,
+  },
   //   {
   //     path: 'tasks',
   //     component: TaskComponent,

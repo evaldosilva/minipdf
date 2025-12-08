@@ -1,0 +1,30 @@
+<div class="flex flex-col h-screen justify-between">
+  <header>
+    <div class="flex flex-row justify-end my-10 gap-7">
+      <!-- start Upgrade de Plano -->
+      <div
+        class="select-none cursor-pointer border-2 border-black bg-white px-5 py-3 font-semibold text-black shadow-[4px_4px_0_0] hover:bg-yellow-300 focus:ring-2 focus:ring-yellow-300 focus:outline-0"
+        (click)="subscribe()"
+      >
+        Faça o upgrade do seu plano
+      </div>
+      <!-- end Upgrade de Plano -->
+
+      <!-- start Compressões restantes -->
+      <div class="w-64">
+        <div
+          class="inline-block font-medium rounded-2xl border bg-black px-5 py-3 transition-colors"
+        >
+          <div class="select-none text-sm font-bold text-white transition-colors">
+            Compressões Restantes: {{ remainingCompressions() }}
+          </div>
+        </div>
+      </div>
+      <!-- end Compressões restantes -->
+    </div>
+  </header>
+  <main class="flex flex-col gap-4 mb-auto h-10">
+    <app-pdf-resize (updateRemainingCompressions)="getRemainingCompressions()"></app-pdf-resize>
+    <app-footer></app-footer>
+  </main>
+</div>
