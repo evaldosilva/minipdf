@@ -11,6 +11,6 @@ public class AppUserController(IAppUser appUser) : ControllerBase
     [Route("RemainingConvertions")]
     public ActionResult GetRemainingConvertions()
     {
-        return Ok(appUser.GetRemainingConvertions());
+        return Ok(appUser.GetRemainingConvertions("test"));
     }
 }

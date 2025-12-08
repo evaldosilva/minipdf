@@ -4,10 +4,12 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>0e5df5d5-c02e-4e67-a501-1b96771eadc5</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.PdfCompressor\Domain.PdfCompressor.csproj" />
+    <ProjectReference Include="..\Infrastructure\Data.MiniPdf\Data.MiniPdf.csproj" />
     <ProjectReference Include="..\Service\Service.AppUser\Service.AppUser.csproj" />
     <ProjectReference Include="..\Service\Service.PdfCompressor\Service.PdfCompressor.csproj" />
   </ItemGroup>

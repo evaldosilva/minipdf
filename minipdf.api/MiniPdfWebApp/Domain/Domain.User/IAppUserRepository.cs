@@ -1,6 +1,6 @@
 ﻿namespace Domain.AppUser;
 
-public interface IAppUser
+public interface IAppUserRepository
 {
     int GetRemainingConvertions(string userId);
 }

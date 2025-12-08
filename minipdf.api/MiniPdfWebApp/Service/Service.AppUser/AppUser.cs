@@ -2,10 +2,10 @@
 
 namespace Service.AppUser;
 
-public class AppUser : IAppUser
+public class AppUser(IAppUserRepository appUserRepository) : IAppUser
 {
-    public int GetRemainingConvertions()
+    public int GetRemainingConvertions(string userId)
     {
-        return 99;
+        return appUserRepository.GetRemainingConvertions(userId);
     }
 }
