@@ -1,9 +1,9 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, inject, output, signal } from '@angular/core';
 import { PanelModule } from 'primeng/panel';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { ProgressBarModule } from 'primeng/progressbar';
+import { DialogModule } from 'primeng/dialog';
 import { environment } from '../../../../environments/environment';
 import { PdfCompressorResult } from '../../../core/models/PdfCompressorResult';
 import { PdfDataResult } from '../../../core/models/PdfDataResult';
@@ -12,7 +12,7 @@ import { PdfcompressorService } from '../../../core/services/pdf-compressor';
 @Component({
   standalone: true,
   selector: 'app-pdf-resize',
-  imports: [FormsModule, PanelModule, InputTextModule, ProgressBarModule],
+  imports: [FormsModule, PanelModule, InputTextModule, ProgressBarModule, DialogModule],
   templateUrl: './pdf-resize.html',
   styleUrl: './pdf-resize.css',
 })
@@ -31,6 +31,12 @@ export class PdfResize {
   protected uploadedFiles: File[] = [];
 
   private pdfcompressorService = inject(PdfcompressorService);
+
+  public compressOptionsVisible: boolean = false;
+
+  showCompressOptionsVisibleDialog() {
+    this.compressOptionsVisible = true;
+  }
 
   getFileName(file: File) {
     const filename = file.name + ' (' + this.getFileSize(file.size) + ')';
