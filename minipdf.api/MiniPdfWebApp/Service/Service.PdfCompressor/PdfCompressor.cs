@@ -12,6 +12,7 @@ namespace Service.PdfCompressor;
 
 public class PdfCompressor : IPdfCompressor
 {
+    private const int _memoryStreamInitBytes = 1024;
     private const string outputFolder = "mini-output\\";
     private const string FilePrefix = "mini-";
     private const string OutputImgFilePrefix = "img-";
@@ -20,7 +21,6 @@ public class PdfCompressor : IPdfCompressor
                       dimTwo = 1920;
     private readonly NaiveTransparencyRemover bgColor = new(255, 255, 255);
     private int _pdfQualityPercentage = 20;
-    private int _memoryStreamInitBytes = 100;
 
     public Task<PdfData> CompressAsync(PdfData pdfData, int qualityPercentage = 50)
     {
